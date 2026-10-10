@@ -1,278 +1,241 @@
-```
-==========================================================================
-                                                                          
-        EXAMINATION  MANAGEMENT  PORTAL   ( E M P )                       
-        Flask  .  Jinja2  .  SQLite  .  Bootstrap                         
-                                                                          
-        Admin  |  Examiner  |  Student   -   one portal, three roles      
-                                                                          
-==========================================================================
-```
+<div align="center">
 
-A small web portal to run viva / practical / project-demo examinations
-from start to end: the admin sets up the exam, examiners create slots,
-students book a slot, examiners give marks, admin publishes the result.
+# Examination Management Portal (EMP)
 
-Everything runs locally on your own computer. No internet is needed
-except for the Bootstrap stylesheet that the pages load from a CDN.
+### A simple, role-based portal for managing viva, practical, and project-demo examinations.
 
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.x-000000?logo=flask&logoColor=white)
+![Jinja2](https://img.shields.io/badge/Templates-Jinja2-B41717)
+![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/UI-Bootstrap-7952B3?logo=bootstrap&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Local%20Development-lightgrey)
 
-```
---------------------------------------------------------------------------
-   [ 1 ]   CREATOR
---------------------------------------------------------------------------
-```
+**Admin · Examiner · Student — one portal, three roles**
 
-| | |
-|---|---|
-| **Name**  | Zaira Rahman |
-| **Email** | zairarahman24@gmail.com |
-| **Project folder / zip** | `24F2008737` |
+</div>
 
+---
 
-```
---------------------------------------------------------------------------
-   [ 2 ]   LOGIN ID AND PASSWORD
---------------------------------------------------------------------------
-```
+## Overview
 
-**Admin (already created, nobody can register as admin)**
+The Examination Management Portal (EMP) brings the main steps of an examination into one place. The admin prepares courses and exams, examiners set up time slots and evaluate students, and students book a suitable slot and check their results once they are published.
 
-| Field    | Value        |
-|----------|--------------|
-| Username | `Admin`      |
-| Password | `24f2008737` |
+The project is designed to run locally on a computer using Flask and SQLite. It keeps the workflow straightforward and gives each role access to the pages and actions it needs.
 
-**Student**: click *"Create a student or examiner account"* on the login
-page, fill the form, and log in straight away.
+> **Local setup:** The app runs locally. The pages load Bootstrap from a CDN, so an internet connection is needed to fetch the stylesheet unless you configure Bootstrap locally.
 
-**Examiner**: register the same way, but the account stays *pending*.
-The admin has to press **Approve** (Admin > Examiners) before the first
-login works. The admin can also add examiners and students directly.
+## Workflow
 
-> The admin username and password are written in `config.py`
-> (`ADMIN_USERNAME`, `ADMIN_PASSWORD`). They are used only the very
-> first time, when the database is created.
+The exam moves through a defined sequence of statuses, from initial setup to published results.
 
+![Examination Management Portal workflow](EMP_WorkFlow.png)
 
-```
---------------------------------------------------------------------------
-   [ 3 ]   HOW TO RUN
---------------------------------------------------------------------------
-```
+1. **Create the exam** — the admin adds a course, creates the exam, sets its dates, assigns an examiner, and adds marking rubrics.
+2. **Create slots** — once the exam enters **Slot Creation**, assigned examiners can create available slots within the configured date window.
+3. **Open booking** — when the status changes to **Booking Open**, students can book an available slot during the booking period.
+4. **Evaluate students** — examiners record marks against the exam rubrics and can add remarks.
+5. **Publish results** — the admin publishes the results, after which students can view their marks and download their scorecard.
 
-**Easy way (Windows)**
+The status sequence is:
 
-1. Unzip the folder `24F2008737`.
-2. Double click **`run.bat`**.
-3. It installs Flask, opens `http://127.0.0.1:5000` and starts the app.
+`Draft` → `Slot Creation` → `Booking Open` → `Closed` → `Completed`
 
-**Manual way**
+## Roles and features
 
-```
+### Admin
+
+- View a dashboard with exam, booking, examiner-workload, and progress summaries.
+- Add, edit, search, and manage courses.
+- Create and update examinations, manage their status, assign or remove examiners, and publish results.
+- Set marking rubrics for each exam. The total rubric marks cannot exceed the exam's maximum marks.
+- Add students and examiners, approve pending examiner registrations, and activate or deactivate accounts.
+- View all slots and change a slot's assigned examiner.
+- Review bookings and move a student to another open slot for the same exam.
+
+### Examiner
+
+- View assigned exams, upcoming slots, and evaluations that still need attention.
+- Create, edit, and remove slots with a date, time, capacity, and venue.
+- View students booked into their slots.
+- Evaluate or re-evaluate eligible students using rubric marks and remarks.
+
+### Student
+
+- View open exams, available slots, upcoming exams, and recent results.
+- Search exams by name, course, or type, then book an available slot.
+- Review booking history and cancel an active booking.
+- View published marks and remarks, and download a scorecard as a text file.
+- Update profile details and change the account password.
+
+Tables include search where appropriate and show the total number of records. Longer tables scroll within their cards while keeping the heading row visible.
+
+## Getting started
+
+### Requirements
+
+- Python **3.9 or newer**
+- Flask **3.x** and the packages listed in `requirements.txt`
+- A modern web browser
+
+### Option 1: Run on Windows
+
+1. Extract the project folder, `24F2008737`.
+2. Double-click `run.bat`.
+3. Let the script install the requirements and start the application.
+4. Open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
+
+### Option 2: Run manually
+
+From the project directory, install the dependencies and start the app:
+
+```bash
 pip install -r requirements.txt
 python app.py
 ```
 
-Then open `http://127.0.0.1:5000` in the browser.
+Then visit [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-`flask --app app run` works too, because the tables are created when
-`app.py` is imported (not only when it is run directly).
+You can also start it with Flask's CLI:
 
-Requirements: Python 3.9 or newer and Flask 3.
-
-**Start again from zero:** stop the app, delete `Database/emp.db`, start
-the app. A new empty database and the admin account are made again.
-
-
-```
---------------------------------------------------------------------------
-   [ 4 ]   TREE OF THE FILES
---------------------------------------------------------------------------
+```bash
+flask --app app run
 ```
 
-```
+The database tables are initialized when `app.py` is imported.
+
+### Reset the local database
+
+To start with a fresh database, stop the application and delete `Database/emp.db`. Start the app again and the database and initial admin account will be created.
+
+**Note:** Resetting the database removes the existing application data. Back up `Database/emp.db` first if you need to keep it.
+
+## Accounts and access
+
+### Admin
+
+The admin account is created during the initial database setup. Its username and password are configured in `config.py` using `ADMIN_USERNAME` and `ADMIN_PASSWORD`.
+
+For safety, change the default credentials before sharing or deploying the project, and do not publish real passwords in a public repository.
+
+### Student
+
+On the login page, choose **Create a student or examiner account**, complete the registration form, and sign in.
+
+### Examiner
+
+Examiner registrations remain pending until an admin approves the account under **Admin → Examiners**. The admin can also create student and examiner accounts directly.
+
+## Project structure
+
+```text
 24F2008737/
-|
-|-- app.py                     starts the app, joins all parts, runs init_db()
-|-- config.py                  admin login, secret key, exam types and statuses
-|-- helpers.py                 login_required, in_window, take_seat, give_seat_back
-|-- api_routes.py              small JSON api  (/api/exams, /api/slots, /api/bookings)
-|-- run.bat                    one click start for Windows
-|-- requirements.txt           Flask
-|-- README.md                  this file
-|
-|-- Login and Registration/
-|   |-- login.html             login page
-|   |-- Registration.html      student / examiner sign up
-|   `-- auth_routes.py         login, register, logout
-|
-|-- Admin/
-|   |-- Admin_dashboard.html   all admin pages (one page per sidebar link)
-|   `-- admin_routes.py        courses, exams, rubrics, people, slots, bookings
-|
-|-- Examiner/
-|   |-- Examiner_dashboard.html   dashboard, my slots, booked students, evaluate
-|   `-- examiner_routes.py        create / edit slots, give marks
-|
-|-- Student/
-|   |-- Student_dashboard.html    dashboard, exams + booking, history, results, profile
-|   `-- student_routes.py         book, cancel, profile, scorecard download
-|
-|-- Images/                    workflow-management.png, workflow-sketch.png (used in this README)
-|
-|-- Database/
-|   |-- database.py            tables (SCHEMA), init_db(), query() and execute()
-|   `-- emp.db                 made automatically on the first start
-|
-`-- Style/
-    `-- Style.css              one stylesheet for every page
+├── app.py                         # App entry point and database initialization
+├── config.py                      # Configuration, admin credentials, statuses
+├── helpers.py                     # Shared login and booking helpers
+├── api_routes.py                  # JSON API endpoints
+├── run.bat                        # Windows startup script
+├── requirements.txt               # Python dependencies
+├── README.md
+│
+├── Login and Registration/
+│   ├── login.html                 # Login page
+│   ├── Registration.html          # Student and examiner registration
+│   └── auth_routes.py             # Login, registration, and logout
+│
+├── Admin/
+│   ├── Admin_dashboard.html       # Admin interface
+│   └── admin_routes.py            # Courses, exams, rubrics, users, bookings
+│
+├── Examiner/
+│   ├── Examiner_dashboard.html    # Examiner interface
+│   └── examiner_routes.py         # Slot management and evaluation
+│
+├── Student/
+│   ├── Student_dashboard.html     # Student interface
+│   └── student_routes.py          # Booking, profile, and scorecard
+│
+├── EMP_WorkFlow.png               # Examination workflow diagram used above
+│
+├── Database/
+│   ├── database.py                # Schema and database helper functions
+│   └── emp.db                     # Created automatically on first start
+│
+└── Style/
+    └── Style.css                  # Stylesheet used across the pages
 ```
 
-Every HTML file is complete on its own (own `<!DOCTYPE html>`, head,
-top bar and sidebar). There is no shared layout file. Each role folder
-keeps its page and its python file side by side.
+Each HTML page contains its own document structure, header, and sidebar. The role folders keep the relevant page and Python route file together; the project does not use a shared base-layout template.
 
+## Built-in rules and safeguards
 
-```
---------------------------------------------------------------------------
-   [ 5 ]   WHAT EACH ROLE CAN DO
---------------------------------------------------------------------------
-```
+- A student can have only one active booking per exam. They must cancel it before choosing another slot.
+- Booking is handled one seat at a time to prevent two students from taking the final seat simultaneously.
+- Examiners cannot create overlapping slots on the same day or create slots in the past.
+- A slot can be edited or removed only while it has no bookings and the exam is in **Draft** or **Slot Creation**.
+- Examiners can evaluate only students who booked one of their own slots.
+- Marks must stay within the maximum allowed for each rubric criterion. Published marks are locked.
+- Courses that already have exams, and exams that already have slots, cannot be deleted. Set them inactive or closed instead.
+- Routes are protected by role, so users are redirected to the appropriate area when they try to access pages outside their permissions.
+- Passwords are stored as hashes rather than plain text.
 
-**Admin**
-- Dashboard with counts and simple bar charts (bookings, examiner workload, exam progress)
-- Courses: add, edit, delete, search
-- Examinations: create, edit, delete, set status, assign / remove examiners, publish results
-- Rubrics: marking criteria for each exam (their total can never go above the exam's maximum marks)
-- Examiners and Students: add directly, approve pending examiners, activate / deactivate
-- All Slots: see every slot, change the examiner of a slot
-- Bookings: see every booking, move a student to another open slot of the same exam
+### Slot and booking statuses
 
-**Examiner**
-- Dashboard: assigned exams, upcoming slots, pending evaluations
-- My Slots: create, edit, remove slots (date, time, capacity, venue)
-- Booked Students: see who booked, evaluate or re-evaluate with the rubric marks and remarks
+- **Slot:** `Available` → `Full` → `Completed`
+- **Booking:** `Booked` → `Completed` after evaluation, or `Cancelled`
 
-**Student**
-- Dashboard: open exams, free slots, upcoming exams, latest results
-- Examinations and Booking: search by name / course / type and book a slot
-- Booking History: see every booking and cancel an active one
-- Results: published marks with remarks, download the scorecard as a text file
-- My Profile: update details and change password
+A slot is marked **Completed** only when no student is waiting for evaluation and no seats remain free.
 
-All data tables have search where it makes sense and show
-**Total records** under the table. Any number of records can be entered;
-long tables scroll inside their card with the heading row staying visible.
+## Database
 
+The application uses SQLite, with the database stored at `Database/emp.db`. The schema is created by `init_db()` in `Database/database.py`; no manual table setup is needed.
 
-```
---------------------------------------------------------------------------
-   [ 6 ]   HOW AN EXAM TRAVELS  (STATUS FLOW)
---------------------------------------------------------------------------
-```
+| Table | Purpose |
+|---|---|
+| `users` | Admin, examiner, and student accounts, including role and status |
+| `courses` | Course code, name, description, and status |
+| `exams` | Exam details, maximum marks, dates, and status |
+| `assignments` | Examiner-to-exam assignments |
+| `rubrics` | Marking criteria for each exam |
+| `slots` | Slot date, time, capacity, available seats, and venue |
+| `bookings` | Student bookings for exam slots |
+| `evaluations` | Total marks, remarks, and publication state |
+| `evaluation_marks` | Marks awarded for individual rubric criteria |
 
-```
-Draft  ->  Slot Creation  ->  Booking Open  ->  Closed  ->  Completed
-```
+## JSON API
 
-1. **Admin** adds a course, creates the exam (with the four dates), assigns an examiner and adds rubrics.
-2. **Admin** sets the exam to *Slot Creation*. Examiners can now add slots (only while today is inside the slot creation dates).
-3. **Admin** sets the exam to *Booking Open*. Students can book (only while today is inside the booking dates).
-4. After the slot date, the **examiner** gives marks for each student.
-5. **Admin** presses *Publish results*. Students see the marks and the exam becomes *Completed*.
+The following endpoints require a logged-in user:
 
-Slot status: `Available` -> `Full` (no seat left) -> `Completed`.
-A slot becomes *Completed* only when nobody is waiting for evaluation
-**and** no seat is still free, so an empty seat is never locked.
+| Endpoint | What it returns |
+|---|---|
+| `GET /api/exams` | Exams; admins can also see drafts |
+| `GET /api/slots` | Slots, optionally filtered with `?exam_id=1` |
+| `GET /api/bookings` | Bookings visible to the current role: all for admins, own slots for examiners, and own bookings for students |
 
-Booking status: `Booked` -> `Completed` (after evaluation) or `Cancelled`.
+Requests without a login receive an HTTP `401` response.
 
-**Workflow (management view)**
+## Notes for development
 
-![Management workflow](Images/workflow-management.png)
+- Route names use role-based Flask blueprints, for example `auth.login`, `admin.show_page`, `examiner.save_slot`, and `student.book_slot`. Follow the same naming pattern when adding routes.
+- The role folders are added to the Python import path in `app.py`. Keep that setup in place when reorganizing the project.
+- To add an admin page, update `ADMIN_PAGES` in `admin_routes.py`, provide the page data in `show_page`, and add the matching conditional block and sidebar link in `Admin_dashboard.html`.
+- Replace `SECRET_KEY` in `config.py` before using the app beyond local development.
+- `debug=True` in `app.py` is intended for local development only. Disable debug mode before deploying anywhere accessible to other users.
 
-**Workflow (hand drawn on canvas)**
+## Project details
 
-![Hand drawn workflow](Images/workflow-sketch.png)
+| Field | Details |
+|---|---|
+| Project | Examination Management Portal (EMP) |
+| Creator | Zaira Rahman |
+| Email | zairarahman24@gmail.com |
+| Project folder / ID | `24F2008737` |
+| Stack | Python, Flask, Jinja2, SQLite, Bootstrap |
 
+---
 
-```
---------------------------------------------------------------------------
-   [ 7 ]   IMPORTANT RULES BUILT IN
---------------------------------------------------------------------------
-```
+<div align="center">
 
-- A student can hold only **one live booking per exam**. Cancel first to choose another slot.
-- A slot is booked one seat at a time, so two students can never take the last seat together.
-- An examiner cannot make two overlapping slots on the same day, and cannot make a slot in the past.
-- A slot can be edited or removed only while no student has booked it and the exam is still in *Draft* / *Slot Creation*.
-- An examiner can evaluate only students who booked **their own** slots.
-- Marks must be between 0 and the maximum of each rubric criterion. Once results are published the marks are locked.
-- A course that already has exams, or an exam that already has slots, cannot be deleted (set it Inactive / Closed instead).
-- Pages are protected by role. A student opening an admin link is sent back to his own dashboard.
-- Passwords are stored as hashes, never as plain text.
+**Examination Management Portal · 24F2008737**
 
-
-```
---------------------------------------------------------------------------
-   [ 8 ]   DATABASE  (SQLite, Database/emp.db)
---------------------------------------------------------------------------
-```
-
-| Table              | Holds |
-|--------------------|-------|
-| `users`            | admin, examiners, students (role + status) |
-| `courses`          | course code, name, description, status |
-| `exams`            | exam details, marks, the four dates, status |
-| `assignments`      | which examiner is assigned to which exam |
-| `rubrics`          | marking criteria of an exam |
-| `slots`            | date, time, capacity, seats available, venue |
-| `bookings`         | which student booked which slot |
-| `evaluations`      | total marks, remarks, published flag |
-| `evaluation_marks` | marks given for each rubric criterion |
-
-The file and all tables are created by `init_db()` in
-`Database/database.py`. Nothing has to be created by hand.
-
-
-```
---------------------------------------------------------------------------
-   [ 9 ]   API ENDPOINTS  (JSON, login required)
---------------------------------------------------------------------------
-```
-
-| URL             | Returns |
-|-----------------|---------|
-| `/api/exams`    | exams (admin sees drafts too, others do not) |
-| `/api/slots`    | slots, optional `?exam_id=1` |
-| `/api/bookings` | admin: all, examiner: own slots, student: own bookings |
-
-Without a login they answer `401`.
-
-
-```
---------------------------------------------------------------------------
-   [ 10 ]   THINGS TO REMEMBER
---------------------------------------------------------------------------
-```
-
-- Route names carry the role as a prefix because each role is a Flask
-  blueprint: `auth.login`, `admin.show_page`, `examiner.save_slot`,
-  `student.book_slot`. Use the same style when adding a new route.
-- The python files sit inside the role folders, so `app.py` adds those
-  folders to the import path at the top. Keep that part when editing.
-- To add a new admin page: add its name to `ADMIN_PAGES` in
-  `admin_routes.py`, fill the data in `show_page`, and add a
-  `{% if page == '...' %}` block plus a sidebar link in
-  `Admin_dashboard.html`.
-- Change the `SECRET_KEY` in `config.py` before using it anywhere other
-  than your own computer, and `debug=True` in `app.py` is only for local use.
-
-
-```
---------------------------------------------------------------------------
-   Examination Management Portal  ~  By 24F2008737
-   Creator : Zaira Rahman  |  zairarahman24@gmail.com
---------------------------------------------------------------------------
-```
+</div>
